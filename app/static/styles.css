@@ -2629,6 +2629,7 @@ tbody tr:hover {
 @media screen {
   .sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 22px; }
   .sidebar-header .brand { order: 0; flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 8px; padding: 0; }
+  .sidebar-header .kiese-brand-badge { display: flex !important; flex-direction: column; }
   .sidebar-header .brand-tag { font-size: 9px; }
   .sidebar-toggle-slot { order: 1; display: flex; flex: 0 0 52px; margin: 0; }
   .sidebar-toggle-slot .sidebar-toggle { background: transparent; border-color: transparent; color: var(--muted); }
