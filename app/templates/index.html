@@ -13,6 +13,10 @@
   <div class="app-shell">
     <!-- Kiosk Sidebar -->
     <aside id="main-sidebar" class="sidebar" aria-label="Hauptnavigation">
+      <div id="sidebar-toggle-slot" class="sidebar-toggle-slot">
+        <button id="sidebar-toggle" class="secondary-btn sidebar-toggle" type="button"
+          aria-controls="main-sidebar" aria-expanded="true" aria-label="Menü einklappen" title="Menü einklappen">‹</button>
+      </div>
       <button class="brand" data-view-jump="dashboard" type="button" aria-label="Zur Übersicht">
         <div class="kiese-brand-badge">
           <span class="kiese-brand-title">Kiese</span>
@@ -67,7 +71,6 @@
 
         <!-- Globale Live-Suche -->
         <div class="topbar-actions">
-          <button id="sidebar-toggle" class="secondary-btn" type="button" aria-controls="main-sidebar" aria-expanded="true">☰ Menü ausblenden</button>
           <button id="fullscreen-toggle" class="secondary-btn" type="button" aria-label="Vollbild aktivieren">⛶ Vollbild</button>
           <div class="global-search-container">
             <div class="search-field header-search">

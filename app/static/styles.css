@@ -2624,3 +2624,12 @@ tbody tr:hover {
     *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   }
 }
+
+/* Pfeilsteuerung innerhalb der Sidebar; eingeklappt am linken Rand erreichbar. */
+@media screen {
+  .sidebar-toggle-slot { display: flex; justify-content: flex-start; margin-bottom: 14px; }
+  .sidebar-toggle { width: 52px; height: 52px; padding: 0; font-size: 36px; line-height: 1; flex-shrink: 0; }
+  body.sidebar-collapsed .sidebar-toggle { position: fixed; top: 20px; left: 14px; z-index: 110; background: var(--surface-2); }
+  body.sidebar-collapsed .topbar { padding-left: 64px; min-height: 52px; }
+}
+@media print { .sidebar-toggle, .sidebar-toggle-slot { display: none !important; } }

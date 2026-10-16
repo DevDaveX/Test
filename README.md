@@ -21,7 +21,8 @@ wenn diese Funktionen genutzt werden. Keine erfundenen Ersatzregeln für Prüffr
 
 ## Bedienung
 
-- „Menü ausblenden/einblenden“ entfernt die komplette Sidebar und gibt Platz frei.
+- Der Pfeil oben links in der Sidebar klappt das Menü ein. Eingeklappt bleibt
+  ein Pfeil am linken Bildschirmrand zum Wiederöffnen sichtbar.
   Die manuelle Wahl wird lokal im Browser gespeichert. Bis 1180 CSS-Pixel startet
   die Navigation ohne gespeicherte Wahl eingeklappt und schließt nach Auswahl.
 - Mindestens 52 CSS-Pixel hohe Schaltflächen und Eingaben; Zahlenfelder mit

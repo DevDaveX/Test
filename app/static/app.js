@@ -3061,13 +3061,21 @@ function initKioskControls() {
   const toggle = document.getElementById('sidebar-toggle');
   const sidebar = document.getElementById('main-sidebar');
   const fullscreen = document.getElementById('fullscreen-toggle');
+  const toggleSlot = document.getElementById('sidebar-toggle-slot');
+  const shell = document.querySelector('.app-shell');
   const compact = window.matchMedia('(max-width: 1180px)');
   function setCollapsed(collapsed) {
     document.body.classList.toggle('sidebar-collapsed', collapsed);
+    // Den Öffnen-Pfeil außerhalb der inaktiven Sidebar erreichbar halten.
+    if (collapsed) shell.insertBefore(toggle, sidebar);
+    else toggleSlot.appendChild(toggle);
     sidebar.inert = collapsed;
     sidebar.setAttribute('aria-hidden', String(collapsed));
     toggle.setAttribute('aria-expanded', String(!collapsed));
-    toggle.textContent = collapsed ? '☰ Menü einblenden' : '☰ Menü ausblenden';
+    toggle.textContent = collapsed ? '›' : '‹';
+    const label = collapsed ? 'Menü ausklappen' : 'Menü einklappen';
+    toggle.setAttribute('aria-label', label);
+    toggle.title = label;
   }
   let saved = null;
   try { saved = localStorage.getItem('kiese-sidebar-collapsed'); } catch (_) {}
@@ -3075,6 +3083,7 @@ function initKioskControls() {
   toggle.addEventListener('click', function () {
     const collapsed = !document.body.classList.contains('sidebar-collapsed');
     setCollapsed(collapsed);
+    toggle.focus({preventScroll: true});
     try { localStorage.setItem('kiese-sidebar-collapsed', String(collapsed)); } catch (_) {}
   });
   document.addEventListener('click', function (event) {
