@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#12081d">
+  <title>Kiese Reise-Service | Fuhrpark & Prüffristen</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+  <div class="app-shell">
+    <!-- Kiosk Sidebar -->
+    <aside id="main-sidebar" class="sidebar" aria-label="Hauptnavigation">
+      <button class="brand" data-view-jump="dashboard" type="button" aria-label="Zur Übersicht">
+        <div class="kiese-brand-badge">
+          <span class="kiese-brand-title">Kiese</span>
+          <span class="kiese-brand-sub">REISE-SERVICE</span>
+        </div>
+        <span class="brand-tag">Fuhrpark</span>
+      </button>
+
+      <nav class="desktop-nav">
+        <button class="nav-item active" data-view="dashboard" type="button">
+          <span class="nav-icon">⌂</span>
+          <span class="nav-label">Übersicht</span>
+        </button>
+        <button class="nav-item" data-view="vehicles" type="button">
+          <span class="nav-icon">▤</span>
+          <span class="nav-label">Fahrzeuge</span>
+        </button>
+        <button class="nav-item" data-create type="button">
+          <span class="nav-icon">＋</span>
+          <span class="nav-label">Bus anlegen</span>
+        </button>
+        <button class="nav-item" data-view="history" type="button">
+          <span class="nav-icon">↶</span>
+          <span class="nav-label">Historie</span>
+        </button>
+        <button class="nav-item" data-view="notifications" type="button">
+          <span class="nav-icon">●</span>
+          <span class="nav-label">Meldungen</span>
+        </button>
+        <button class="nav-item" data-view="settings" type="button">
+          <span class="nav-icon">⚙</span>
+          <span class="nav-label">Terminal</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span class="connection-dot"></span>
+        <div class="foot-text">
+          <strong>Betriebshof Hamm</strong>
+          <small>Terminal online</small>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Hauptbereich -->
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">Kiese Reise-Service • Fuhrparkverwaltung</span>
+          <h1 id="page-title">Fahrzeugübersicht</h1>
+        </div>
+
+        <!-- Globale Live-Suche -->
+        <div class="topbar-actions">
+          <button id="sidebar-toggle" class="secondary-btn" type="button" aria-controls="main-sidebar" aria-expanded="true">☰ Menü ausblenden</button>
+          <button id="fullscreen-toggle" class="secondary-btn" type="button" aria-label="Vollbild aktivieren">⛶ Vollbild</button>
+          <div class="global-search-container">
+            <div class="search-field header-search">
+              <span class="search-icon">🔍</span>
+              <input id="global-search" type="search" placeholder="Kennzeichen suchen (z. B. 81)..." autocomplete="off"
+                autocapitalize="characters">
+              <button id="clear-search" class="clear-search-btn hidden" type="button"
+                aria-label="Suche leeren">×</button>
+            </div>
+            <div id="search-dropdown" class="search-dropdown hidden"></div>
+          </div>
+
+          <time id="today" class="today-display"></time>
+          <button class="primary-btn" data-create type="button">＋ Fahrzeug anlegen</button>
+        </div>
+      </header>
+
+      <!-- 1. VIEW: DASHBOARD -->
+      <section id="dashboard-view" class="view active">
+        <!-- 5 KPI Karten -->
+        <div class="stats-grid">
+          <button class="stat-card" data-dashboard-filter="all" type="button">
+            <span class="stat-heading">Fahrzeuge</span>
+            <strong id="stat-total">0</strong>
+            <small>im Fuhrpark</small>
+          </button>
+          <button class="stat-card danger" data-dashboard-filter="overdue" type="button">
+            <span class="stat-heading">Überfällig</span>
+            <strong id="stat-overdue">0</strong>
+            <small>Dringend prüfen!</small>
+          </button>
+          <button class="stat-card critical" data-dashboard-filter="7" type="button">
+            <span class="stat-heading">≤ 7 Tage</span>
+            <strong id="stat-7">0</strong>
+            <small>diese Woche</small>
+          </button>
+          <button class="stat-card warning" data-dashboard-filter="30" type="button">
+            <span class="stat-heading">≤ 30 Tage</span>
+            <strong id="stat-30">0</strong>
+            <small>Monatsplanung</small>
+          </button>
+          <button class="stat-card success" data-dashboard-filter="ok" type="button">
+            <span class="stat-heading">In Ordnung</span>
+            <strong id="stat-ok">0</strong>
+            <small>Fristen aktuell</small>
+          </button>
+        </div>
+
+        <!-- Werkstatt-Planung 3 Monate -->
+        <article class="panel forecast-panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Werkstatt-Planung</span>
+              <h2>Fälligkeiten nach Monat (HU / SP / Tacho)</h2>
+            </div>
+          </div>
+          <div class="forecast-grid">
+            <button class="forecast-card current" data-forecast-month="current" type="button">
+              <div class="forecast-head">
+                <span class="forecast-pill" id="forecast-current-pill">Dringend / Diesen Monat</span>
+                <h3 id="forecast-current-title">Diesen Monat</h3>
+              </div>
+              <div class="forecast-total">
+                <span id="forecast-current-count">0</span>
+                <small>Fahrzeuge fällig</small>
+              </div>
+              <div class="forecast-breakdown">
+                <span><b id="forecast-current-hu">0</b> HU</span>
+                <span><b id="forecast-current-sp">0</b> SP</span>
+                <span><b id="forecast-current-tacho">0</b> Tacho</span>
+                <span id="forecast-current-overdue-tag" class="forecast-overdue-tag hidden">
+                  ⚠️ Davon abgelaufen: <b id="forecast-current-overdue">0</b>
+                </span>
+              </div>
+            </button>
+
+            <button class="forecast-card" data-forecast-month="next" type="button">
+              <div class="forecast-head">
+                <span class="forecast-pill">Vorschau</span>
+                <h3 id="forecast-next-title">Nächster Monat</h3>
+              </div>
+              <div class="forecast-total">
+                <span id="forecast-next-count">0</span>
+                <small>Fahrzeuge fällig</small>
+              </div>
+              <div class="forecast-breakdown">
+                <span><b id="forecast-next-hu">0</b> HU</span>
+                <span><b id="forecast-next-sp">0</b> SP</span>
+                <span><b id="forecast-next-tacho">0</b> Tacho</span>
+              </div>
+            </button>
+
+            <button class="forecast-card" data-forecast-month="after-next" type="button">
+              <div class="forecast-head">
+                <span class="forecast-pill">Vorausschau</span>
+                <h3 id="forecast-after-next-title">In 2 Monaten</h3>
+              </div>
+              <div class="forecast-total">
+                <span id="forecast-after-next-count">0</span>
+                <small>Fahrzeuge fällig</small>
+              </div>
+              <div class="forecast-breakdown">
+                <span><b id="forecast-after-next-hu">0</b> HU</span>
+                <span><b id="forecast-after-next-sp">0</b> SP</span>
+                <span><b id="forecast-after-next-tacho">0</b> Tacho</span>
+              </div>
+            </button>
+          </div>
+        </article>
+
+        <!-- Nächste Fristen Liste mit Direkt-Erneuern -->
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Dringlichkeit</span>
+              <h2>Nächste anstehende Prüfungen</h2>
+            </div>
+            <button class="secondary-btn" data-view-jump="vehicles" type="button">Alle Fahrzeuge öffnen →</button>
+          </div>
+          <div id="upcoming-list" class="upcoming-list"></div>
+        </article>
+      </section>
+
+      <!-- 2. VIEW: FAHRZEUGE -->
+      <section id="vehicles-view" class="view">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Fuhrpark Kiese</span>
+              <h2>Fahrzeug- & Prüfkataster</h2>
+            </div>
+            <div class="vehicle-print-tools">
+
+              <div class="table-filter-tools">
+                <select id="vehicles-status-filter" class="touch-select">
+                  <option value="all">Alle Fälligkeiten</option>
+                  <option value="overdue">Überfällig</option>
+                  <option value="today">Heute fällig</option>
+                  <option value="7">≤ 7 Tage</option>
+                  <option value="30">≤ 30 Tage</option>
+                  <option value="ok">Alles in Ordnung</option>
+                </select>
+
+                <button id="reset-vehicle-filter" class="ghost-btn" type="button">
+                  Filter zurücksetzen
+                </button>
+              </div>
+
+              <div class="print-actions">
+
+                <button id="print-vehicles-btn" class="secondary-btn print-action-btn" type="button">
+                  🖨️ Komplette Fahrzeugübersicht drucken
+                </button>
+
+                <button id="print-overdue-btn" class="danger-btn print-action-btn" type="button">
+                  ⚠️ Nur Überfällige drucken
+                </button>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="kiese-table">
+              <thead>
+                <tr>
+                  <th data-sort="plate">Kennzeichen</th>
+                  <th data-sort="tacho">Tachoprüfung</th>
+                  <th data-sort="hu">TÜV / HU</th>
+                  <th data-sort="sp">SP (Prüfung)</th>
+                  <th data-sort="first_aid">Erste-Hilfe</th>
+                  <th data-sort="fire_extinguisher">Feuerlöscher</th>
+                  <th data-sort="next">Nächster Termin</th>
+                  <th style="text-align: right;">Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="vehicle-table-body"></tbody>
+            </table>
+          </div>
+          <div id="vehicle-empty" class="empty-state hidden">Keine Fahrzeuge gefunden.</div>
+        </article>
+      </section>
+
+      <!-- 3. VIEW: HISTORIE -->
+      <section id="history-view" class="view">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Dokumentation</span>
+              <h2>Prüfungs- & Wartungsprotokoll</h2>
+            </div>
+          </div>
+          <div id="global-history" class="history-content"></div>
+        </article>
+      </section>
+
+      <!-- 4. VIEW: MELDUNGEN -->
+      <section id="notifications-view" class="view">
+        <div class="settings-grid">
+          <article class="panel settings-card">
+            <span class="eyebrow">Terminal Status</span>
+            <h2>Betriebshof Meldungen</h2>
+            <p style="margin: 16px 0; font-size: 16px; font-weight: 700; color: var(--ok);">● Automatische Überwachung
+              aktiv</p>
+            <p style="color: var(--muted); font-size: 13px;">Dieses Terminal prüft täglich fällige Prüfungen von Reise-
+              und Linienbussen.</p>
+          </article>
+          <article class="panel settings-card">
+            <span class="eyebrow">Intervall-Logik</span>
+            <h2>Erinnerungsstufen</h2>
+            <p style="color: var(--muted); font-size: 13px; margin-top: 12px; line-height: 1.6;">
+              Benachrichtigung bei 30, 14, 7, 3, 2 und 1 Tag vorher sowie am Fälligkeitstag.<br>
+              <strong style="color: var(--overdue);">Bei Überfälligkeit erfolgt tägliche Alarmierung.</strong>
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 5. VIEW: EINSTELLUNGEN -->
+      <section id="settings-view" class="view">
+        <article class="panel settings-card">
+          <span class="eyebrow">Kiese Fuhrpark</span>
+          <h2>Terminal Konfiguration</h2>
+          <p style="color: var(--muted); line-height: 1.6;">
+            Betriebshof Hamm • Kiese Reise-Service GmbH<br>
+            Kiosk-Touch Modus aktiv.
+          </p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="print-options-dialog" class="dialog">
+
+    <div class="dialog-card print-options-card">
+
+      <header class="dialog-head">
+
+        <div>
+          <span class="eyebrow">Druckansicht</span>
+
+          <h2>
+            Fahrzeugübersicht drucken
+          </h2>
+        </div>
+
+        <button type="button" class="icon-btn" aria-label="Dialog schließen" data-close="print-options-dialog" aria-label="Druckdialog schließen">
+          ×
+        </button>
+
+      </header>
+
+      <div class="print-options-body">
+
+        <p class="print-options-intro">
+          Wähle aus, wie die Fahrzeugübersicht sortiert oder
+          eingeschränkt werden soll.
+        </p>
+
+        <div class="print-option-grid">
+
+          <button type="button" class="print-option" data-print-mode="plate">
+            <span class="print-option-icon">🔤</span>
+
+            <span>
+              <strong>Nach Kennzeichen sortiert</strong>
+              <small>
+                Alle Fahrzeuge alphabetisch nach Kennzeichen.
+              </small>
+            </span>
+          </button>
+
+
+          <button type="button" class="print-option" data-print-mode="due">
+            <span class="print-option-icon">📅</span>
+
+            <span>
+              <strong>Nach Ablaufdaten sortiert</strong>
+              <small>
+                Die nächste fällige Frist steht zuerst.
+              </small>
+            </span>
+          </button>
+
+
+          <button type="button" class="print-option" data-print-mode="status">
+            <span class="print-option-icon">🚦</span>
+
+            <span>
+              <strong>Nach Status sortiert</strong>
+              <small>
+                Überfällig → dringend → bald fällig → gültig.
+              </small>
+            </span>
+          </button>
+
+
+          <button type="button" class="print-option" data-print-mode="current-month">
+            <span class="print-option-icon">📆</span>
+
+            <span>
+              <strong>Diesen Monat fällige Fahrzeuge</strong>
+              <small>
+                Fahrzeuge mit mindestens einer Frist in diesem Monat.
+              </small>
+            </span>
+          </button>
+
+
+          <button type="button" class="print-option" data-print-mode="next-month">
+            <span class="print-option-icon">➡️</span>
+
+            <span>
+              <strong>Nächsten Monat fällige Fahrzeuge</strong>
+              <small>
+                Fahrzeuge mit mindestens einer Frist im nächsten Monat.
+              </small>
+            </span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <footer class="dialog-actions">
+
+        <button type="button" class="secondary-btn" data-close="print-options-dialog">
+          Abbrechen
+        </button>
+
+      </footer>
+
+    </div>
+
+  </dialog>
+
+  <section id="print-layout" class="print-layout" aria-hidden="true"></section>
+
+  <!-- KIOSK-SCHNELL-ERNEUERN MODAL -->
+  <dialog id="quick-renew-dialog" class="dialog">
+    <form id="quick-renew-form" class="dialog-card">
+      <header class="dialog-head">
+        <div>
+          <span class="eyebrow" id="quick-renew-plate">HAM-KV-XX</span>
+          <h2 id="quick-renew-title">Prüfung erneuern</h2>
+        </div>
+        <button type="button" class="icon-btn" aria-label="Dialog schließen" data-close="quick-renew-dialog">×</button>
+      </header>
+
+      <input type="hidden" name="vehicle_id">
+      <input type="hidden" name="category">
+
+      <div class="quick-renew-body" id="quick-renew-body">
+        <!-- Dynamischer Inhalt im deutschen Format -->
+      </div>
+
+      <footer class="dialog-actions">
+        <button type="button" class="secondary-btn" data-close="quick-renew-dialog">Abbrechen</button>
+        <button type="submit" class="primary-btn">✓ Jetzt im System hinterlegen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- DIALOG: Fahrzeug anlegen/bearbeiten -->
+  <dialog id="vehicle-dialog" class="dialog">
+    <form id="vehicle-form" class="dialog-card">
+      <header class="dialog-head">
+        <div>
+          <span class="eyebrow" id="vehicle-dialog-eyebrow">Neues Fahrzeug</span>
+          <h2 id="vehicle-dialog-title">Fahrzeug hinzufügen</h2>
+        </div>
+        <button type="button" class="icon-btn" aria-label="Dialog schließen" data-close="vehicle-dialog">×</button>
+      </header>
+      <input type="hidden" name="vehicle_id">
+
+      <div class="form-grid">
+        <label class="field span-2">
+          <span>Kennzeichen</span>
+          <input name="plate" value="HAM-KV-" required maxlength="20" class="kiese-input" autocapitalize="characters">
+        </label>
+
+        <label class="field span-2">
+          <span>Erstzulassung (EZ)</span>
+          <div class="date-input-group">
+            <input name="first_registration_day" type="number" min="1" max="31" placeholder="TT"
+              class="kiese-input day-field">
+            <span>.</span>
+            <input name="first_registration_month" type="number" min="1" max="12" placeholder="MM"
+              class="kiese-input month-field">
+            <span>.</span>
+            <input name="first_registration_year" type="number" min="1990" max="2050" placeholder="JJJJ"
+              class="kiese-input year-field">
+          </div>
+          <small class="field-hint">Format: TT.MM.JJJJ. Ohne EZ einfach leer lassen.</small>
+        </label>
+
+        <!-- Tachoprüfung (DD.MM.YYYY, auto +2 Jahre) -->
+        <fieldset class="inspection-form span-2">
+          <legend>Tachoprüfung (§ 57b StVZO)</legend>
+          <label class="field">
+            <span>Letzte Prüfung (TT.MM.JJJJ)</span>
+            <div class="date-input-group">
+              <input name="tacho_last_day" type="number" min="1" max="31" placeholder="TT"
+                class="kiese-input day-field">
+              <span>.</span>
+              <input name="tacho_last_month" type="number" min="1" max="12" placeholder="MM"
+                class="kiese-input month-field">
+              <span>.</span>
+              <input name="tacho_last_year" type="number" min="1990" max="2050" placeholder="JJJJ"
+                class="kiese-input year-field">
+            </div>
+          </label>
+          <label class="field">
+            <span>Nächste Eichung (Automatisch +2 Jahre)</span>
+            <div class="date-input-group">
+              <input name="tacho_due_day" type="number" min="1" max="31" placeholder="TT" class="kiese-input day-field">
+              <span>.</span>
+              <input name="tacho_due_month" type="number" min="1" max="12" placeholder="MM"
+                class="kiese-input month-field">
+              <span>.</span>
+              <input name="tacho_due_year" type="number" min="1990" max="2050" placeholder="JJJJ"
+                class="kiese-input year-field">
+            </div>
+          </label>
+        </fieldset>
+
+        <!-- TÜV / HU (MM.YYYY) -->
+        <fieldset class="inspection-form span-2">
+          <legend>TÜV / HU (Gültig bis Monatsende)</legend>
+          <label class="field">
+            <span>Letzte HU (Monat.Jahr)</span>
+            <div class="month-input-group">
+              <select name="hu_last_m" class="touch-select month-select"></select>
+              <span>.</span>
+              <input name="hu_last_y" type="number" min="2020" max="2040" placeholder="JJJJ"
+                class="kiese-input year-select">
+            </div>
+          </label>
+          <label class="field">
+            <span>Nächste HU (Monat.Jahr)</span>
+            <div class="month-input-group">
+              <select name="hu_due_m" class="touch-select month-select"></select>
+              <span>.</span>
+              <input name="hu_due_y" type="number" min="2020" max="2040" placeholder="JJJJ"
+                class="kiese-input year-select">
+            </div>
+          </label>
+          <div class="quick-pick-row span-2">
+            <span class="quick-pick-label">Schnellwahl:</span>
+            <button type="button" class="quick-btn" data-add-months="hu:3">+ 3 Monate</button>
+            <button type="button" class="quick-btn" data-add-months="hu:12">+ 1 Jahr</button>
+            <button type="button" class="quick-btn" data-add-months="hu:24">+ 2 Jahre</button>
+          </div>
+        </fieldset>
+
+        <!-- SP (MM.YYYY) -->
+        <fieldset class="inspection-form span-2">
+          <legend>Sicherheitsprüfung (SP) (Gültig bis Monatsende)</legend>
+          <label class="field">
+            <span>Letzte SP (Monat.Jahr)</span>
+            <div class="month-input-group">
+              <select name="sp_last_m" class="touch-select month-select"></select>
+              <span>.</span>
+              <input name="sp_last_y" type="number" min="2020" max="2040" placeholder="JJJJ"
+                class="kiese-input year-select">
+            </div>
+          </label>
+          <label class="field">
+            <span>Nächste SP (Monat.Jahr)</span>
+            <div class="month-input-group">
+              <select name="sp_due_m" class="touch-select month-select"></select>
+              <span>.</span>
+              <input name="sp_due_y" type="number" min="2020" max="2040" placeholder="JJJJ"
+                class="kiese-input year-select">
+            </div>
+          </label>
+          <div class="quick-pick-row span-2">
+            <span class="quick-pick-label">Schnellwahl:</span>
+            <button type="button" class="quick-btn" data-add-months="sp:3">+ 3 Monate</button>
+            <button type="button" class="quick-btn" data-add-months="sp:12">+ 1 Jahr</button>
+            <button type="button" class="quick-btn" data-add-months="sp:24">+ 2 Jahre</button>
+          </div>
+        </fieldset>
+
+        <!-- Ausrüstung -->
+        <fieldset class="inspection-form span-2">
+          <legend>Ausrüstung (TT.MM.JJJJ)</legend>
+          <label class="field">
+            <span>Erste-Hilfe Ablauf</span>
+            <div class="date-input-group">
+              <input name="first_aid_day" type="number" min="1" max="31" placeholder="TT" class="kiese-input day-field">
+              <span>.</span>
+              <input name="first_aid_month" type="number" min="1" max="12" placeholder="MM"
+                class="kiese-input month-field">
+              <span>.</span>
+              <input name="first_aid_year" type="number" min="2020" max="2040" placeholder="JJJJ"
+                class="kiese-input year-field">
+            </div>
+          </label>
+          <label class="field">
+            <span>Feuerlöscher Prüfung</span>
+            <div class="date-input-group">
+              <input name="fire_day" type="number" min="1" max="31" placeholder="TT" class="kiese-input day-field">
+              <span>.</span>
+              <input name="fire_month" type="number" min="1" max="12" placeholder="MM" class="kiese-input month-field">
+              <span>.</span>
+              <input name="fire_year" type="number" min="2020" max="2040" placeholder="JJJJ"
+                class="kiese-input year-field">
+            </div>
+          </label>
+        </fieldset>
+      </div>
+      <div id="vehicle-error" class="form-message error hidden"></div>
+      <footer class="dialog-actions">
+        <button type="button" class="secondary-btn" data-close="vehicle-dialog">Abbrechen</button>
+        <button type="submit" class="primary-btn">Speichern</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- DIALOG: Details -->
+  <dialog id="detail-dialog" class="dialog">
+    <div class="dialog-card">
+      <header class="dialog-head">
+        <div>
+          <span class="eyebrow">Fahrzeugakte</span>
+          <h2 id="detail-title">Details</h2>
+        </div>
+        <button type="button" class="icon-btn" aria-label="Dialog schließen" data-close="detail-dialog">×</button>
+      </header>
+      <div id="detail-content"></div>
+    </div>
+  </dialog>
+
+  <!-- DIALOG: Löschen -->
+  <dialog id="delete-dialog" class="dialog">
+    <form id="delete-form" class="dialog-card">
+      <header class="dialog-head">
+        <h2 id="delete-title">Fahrzeug löschen?</h2>
+        <button type="button" class="icon-btn" aria-label="Dialog schließen" data-close="delete-dialog">×</button>
+      </header>
+      <p style="color: var(--muted); margin-bottom: 20px;">Dabei werden alle zugehörigen Prüfungsdaten unwiderruflich
+        entfernt.</p>
+      <input type="hidden" name="vehicle_id">
+      <footer class="dialog-actions">
+        <button type="button" class="secondary-btn" data-close="delete-dialog">Abbrechen</button>
+        <button type="submit" class="danger-btn">Löschen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/static/app.js"></script>
+</body>
+
+</html>
