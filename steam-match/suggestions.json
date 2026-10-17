@@ -1,0 +1,161 @@
+[
+  {
+    "id": "620",
+    "name": "Portal 2",
+    "coop": true,
+    "categories": [
+      "Einzelspieler",
+      "Mehrspieler",
+      "Koop",
+      "Online-Koop",
+      "Koop-Spiele mit geteiltem Bildschirm",
+      "Geteilter Bildschirm",
+      "Steam-Errungenschaften",
+      "Volle Controllerunterstützung",
+      "Steam-Sammelkarten",
+      "Untertitel verfügbar",
+      "Steam Workshop",
+      "Steam Workshop",
+      "Kamerakomfort",
+      "Benutzerdefinierte Lautstärkeregelung",
+      "Spielbar ohne zeitgesteuerte Eingabe",
+      "Unterstützung für DUALSHOCK Controller",
+      "Unterstützung für DUALSHOCK Controller",
+      "DualSense-Controllerunterstützung",
+      "DualSense-Controllerunterstützung",
+      "Jederzeit speichern",
+      "Unterstützung der Steam-Eingabe-API",
+      "Stereo-Sound",
+      "Surround-Sound",
+      "Steam Cloud",
+      "Statistiken",
+      "Enthält Level-Editor",
+      "Kommentare verfügbar",
+      "Remote Play auf Smartphones",
+      "Remote Play auf Tablets",
+      "Remote Play auf TV-Geräten",
+      "Remote Play Together",
+      "Familienbibliothek"
+    ],
+    "price": 9.69,
+    "genres": [
+      "Action",
+      "Abenteuer"
+    ],
+    "genre": "Kreativ",
+    "minutes": 45,
+    "checkedAt": 1792226378713
+  },
+  {
+    "id": "413150",
+    "name": "Stardew Valley",
+    "coop": true,
+    "categories": [
+      "Einzelspieler",
+      "Mehrspieler",
+      "Koop",
+      "Online-Koop",
+      "LAN-Koop",
+      "Koop-Spiele mit geteiltem Bildschirm",
+      "Geteilter Bildschirm",
+      "Steam-Errungenschaften",
+      "Volle Controllerunterstützung",
+      "Steam-Sammelkarten",
+      "Steam Cloud",
+      "Remote Play auf Smartphones",
+      "Remote Play auf Tablets",
+      "Remote Play Together",
+      "Familienbibliothek"
+    ],
+    "price": 13.99,
+    "genres": [
+      "Indie",
+      "Rollenspiel",
+      "Simulationen"
+    ],
+    "genre": "Gemütlich",
+    "minutes": 60,
+    "checkedAt": 1792226378713
+  },
+  {
+    "id": "1966720",
+    "name": "Lethal Company",
+    "coop": true,
+    "categories": [
+      "Einzelspieler",
+      "Mehrspieler",
+      "Koop",
+      "Online-Koop",
+      "Benutzerdefinierte Lautstärkeregelung",
+      "Stereo-Sound",
+      "Teilweise Controllerunterstützung",
+      "Familienbibliothek"
+    ],
+    "price": 9.75,
+    "genres": [
+      "Action",
+      "Abenteuer",
+      "Indie",
+      "Early Access"
+    ],
+    "genre": "Horror",
+    "minutes": 60,
+    "checkedAt": 1792226378713
+  },
+  {
+    "id": "2881650",
+    "name": "Content Warning",
+    "coop": true,
+    "categories": [
+      "Mehrspieler",
+      "Koop",
+      "Online-Koop",
+      "Plattformübergreifender Mehrspieler",
+      "Unterstützung für DUALSHOCK Controller",
+      "DualSense-Controllerunterstützung",
+      "Teilweise Controllerunterstützung",
+      "Steam Cloud",
+      "Familienbibliothek"
+    ],
+    "price": 4.64,
+    "genres": [
+      "Action",
+      "Abenteuer",
+      "Indie"
+    ],
+    "genre": "Horror",
+    "minutes": 45,
+    "checkedAt": 1792226378713
+  },
+  {
+    "id": "105600",
+    "name": "Terraria",
+    "coop": true,
+    "categories": [
+      "Einzelspieler",
+      "Mehrspieler",
+      "PvP",
+      "Online-PvP",
+      "Koop",
+      "Online-Koop",
+      "Steam-Errungenschaften",
+      "Volle Controllerunterstützung",
+      "Steam-Sammelkarten",
+      "Steam Cloud",
+      "Remote Play auf Smartphones",
+      "Remote Play auf Tablets",
+      "Remote Play auf TV-Geräten",
+      "Familienbibliothek"
+    ],
+    "price": 9.75,
+    "genres": [
+      "Action",
+      "Abenteuer",
+      "Indie",
+      "Rollenspiel"
+    ],
+    "genre": "Action",
+    "minutes": 60,
+    "checkedAt": 1792226378713
+  }
+]
