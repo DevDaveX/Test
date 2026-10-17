@@ -81,3 +81,7 @@ Minecraft, Roblox, Skribbl.io (Scribble.IO) und Gartic Phone sind feste zusätzl
 Huntsman ist die ausdrückliche Ausnahme: Pia spielt alleine, David schaut per Livestream zu. Nur Pia setzt dessen Wunsch; nur ihre Lizenz und ihr Veto zählen für diesen Eintrag. Es wird keine ungeprüfte Steam-App-ID für den Titel geraten. Eine Uhrzeitsperre ist nicht gesetzt.
 
 Spielbilder sind absolut auf den begrenzten Kartenkopf zugeschnitten. Sie verdrängen oder überdecken keine Titel, Wünsche oder Schaltflächen. Das wurde mit erfolgreich geladenen Bildern auf Desktop und bei 390 px Breite geprüft.
+
+## Spiele entfernen
+
+Jede Spielkarte bietet „Aus Liste entfernen“. Das entfernt den Titel aus der sichtbaren Auswahl, dem Lostopf und der Warteschlange für beide Profile in diesem Browser. Ein bereits angezeigtes Ergebnis dieses Titels wird zurückgesetzt. Die Entscheidung bleibt nach Neuladen, Steam-Synchronisation und Bibliotheksimport erhalten, auch für die fest eingebauten Zusatzspiele. Besitz und Favoriten bleiben zur Wiederherstellung gespeichert; eure Steam-Bibliothek selbst ändert sich nicht. Unter „Entfernte Spiele“ lassen sich Titel einzeln zurückholen. Eine Datensicherung enthält auch die Entfernungen. „Alles zurücksetzen“ löscht sie zusammen mit den übrigen lokalen Daten.
