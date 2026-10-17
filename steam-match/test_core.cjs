@@ -29,3 +29,12 @@ assert.deepEqual(reasons(huntsman,f,[]),[]);
 assert.equal(weight(huntsman,true),2);
 assert(reasons({...huntsman,votes:['yes','no']},f,[]).includes('Heute nicht gewünscht'));
 console.log('Singleplayer exclusion and Pia-only livestream rules passed.');
+
+const {jointlyOwned,purchaseReasons}=require('./core.js');
+assert.equal(jointlyOwned({...base,owners:['a','b']}),false);
+assert.equal(jointlyOwned({...base,owners:['b','c']}),true);
+const offer={...base,owners:['a'],price:15,confirmed:false};
+assert.deepEqual(purchaseReasons(offer,f,[]),[]);
+for(const g of [{...offer,price:15.01},{...offer,owners:[]},{...offer,owners:['a','c']},{...offer,price:null},{...offer,votes:['yes','no']},{...offer,removed:true},{...offer,multiplayer:false},{...offer,priceAt:0,priceSource:'steam'}])assert(purchaseReasons(g,{...f,budget:100},[]).length);
+assert(purchaseReasons({...offer,mode:'stream'},f,[]).length);
+console.log('Shared-ownership and single-missing-copy purchase rules passed, including hard 15 EUR limit.');

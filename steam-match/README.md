@@ -47,7 +47,7 @@ Store-Daten für die Kaufideen wurden tatsächlich vom deutschen Steam-Store abg
 
 1. Bibliotheken laden oder separat importieren. Der Datenstatus zeigt, ob alle drei geladen sind. Import ersetzt die Besitzinformationen des ausgewählten Accounts; Wünsche anderer Accounts bleiben erhalten.
 2. Unter „Bearbeiten“ Eignung für euren konkreten Spielmodus bestätigen sowie Stimmung und optional Zeit pro Runde ergänzen. Store-Koop-Tags sind nur Hinweise und keine automatische Zwei-Spieler-Bestätigung. Für Steam-Titel sind die Store-Seiten verlinkt.
-3. Kaufoption wählen: beide besitzen das Spiel, eine fehlende Kopie oder auch zwei neue Kopien. Budget pro Person, standardmäßig 15 €. Ein Spiel für 13,99 € darf bei zwei fehlenden Kopien insgesamt 27,98 € kosten. Unbekannte und veraltete Live-Preise schließen nötige Käufe aus.
+3. Die Hauptliste enthält ausschließlich Spiele mit Besitz auf beiden Seiten sowie kostenlos gemeinsam zugängliche Spiele. „Zufällige Kaufidee bis 15 €“ schlägt separat einen Titel vor, den genau eine Person bereits besitzt. Die Preisgrenze kann niedriger gesetzt werden, aber nie höher als 15 €. Unbekannte oder veraltete Preise schließen Kaufideen aus; der Preis einer Steam-Kaufidee wird vor der Anzeige erneut live geprüft.
 4. Pia und David wählen im jeweiligen Profil „Ist okay“, „Lieblingsspiel“ oder „Heute nicht“. Ein Veto entfernt das Spiel. Wer nicht aktiv abstimmt, bleibt neutral; es handelt sich um eine lokale Profilauswahl ohne getrennte Anmeldung.
 5. Optional Horror, Stimmung, Zeitlimit und bereits eingeplante Spiele filtern. Nicht passende Spiele bleiben sichtbar und nennen alle Ausschlussgründe.
 6. Auslosen und das Ergebnis bei Bedarf in die Warteschlange übernehmen. Ohne zulässigen Titel ist die Auslosung deaktiviert.
@@ -85,3 +85,11 @@ Spielbilder sind absolut auf den begrenzten Kartenkopf zugeschnitten. Sie verdr�
 ## Spiele entfernen
 
 Jede Spielkarte bietet „Aus Liste entfernen“. Das entfernt den Titel aus der sichtbaren Auswahl, dem Lostopf und der Warteschlange für beide Profile in diesem Browser. Ein bereits angezeigtes Ergebnis dieses Titels wird zurückgesetzt. Die Entscheidung bleibt nach Neuladen, Steam-Synchronisation und Bibliotheksimport erhalten, auch für die fest eingebauten Zusatzspiele. Besitz und Favoriten bleiben zur Wiederherstellung gespeichert; eure Steam-Bibliothek selbst ändert sich nicht. Unter „Entfernte Spiele“ lassen sich Titel einzeln zurückholen. Eine Datensicherung enthält auch die Entfernungen. „Alles zurücksetzen“ löscht sie zusammen mit den übrigen lokalen Daten.
+
+## Gemeinsame Liste und separate Kaufideen
+
+Einseitig besessene Spiele werden in der Hauptliste vollständig ausgeblendet und kommen auch nicht in deren Lostopf. Zwei Accounts von David zählen gemeinsam als eine Person; für gemeinsamen Besitz ist zusätzlich Pia nötig. Huntsman bleibt ausschließlich im separaten, aufklappbaren Bereich „Pias Livestream-Spiele“ mit einer eigenen Einplanen-Aktion für Pia.
+
+Der Button „Zufällige Kaufidee bis 15 €“ verwendet ausschließlich vorhandene Bibliothekseinträge, die genau eine Person besitzt und die bestätigte Koop-/Mehrspieler-Unterstützung haben. Die andere Person und ihr Preis werden angezeigt. Die harte Grenze beträgt 15 € für die eine fehlende Kopie, auch wenn Eingaben manipuliert werden. Favoriten beeinflussen die Gewichtung; Vetos, entfernte Titel, Stimmung, Dauer und Warteschlange gelten auch hier. Neutrale Wünsche sind erlaubt; es werden keine Interessen aus Spieldaten erfunden. Der aktuelle Nutzer kann seinen Wunsch direkt bei der Kaufidee setzen oder den Vorschlag entfernen. Der Kaufideen-Button lädt keine beliebigen Store-Titel mehr.
+
+Da ein Vorschlag noch kein fertiger Spieleabend ist, muss dessen konkrete Zwei-Personen-Eignung nicht bereits manuell bestätigt sein. Vor einem Kauf weist die App bei unbestätigten Titeln darauf hin, Mindestspielerzahl, Spielmodus und Plattformen zu prüfen. Für die gemeinsame Auslosung gilt weiterhin eure Eignungsbestätigung. Ein Kaufvorschlag wird weder automatisch gekauft noch in die gemeinsame Liste oder Warteschlange übernommen. Steam-Besitz kann nach einem Kauf erneut synchronisiert werden.
