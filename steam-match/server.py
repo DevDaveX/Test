@@ -16,6 +16,13 @@ def fetch(url):
     with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'SteamMatch/1.0'}), timeout=20) as r:
         return r.read(8_000_000)
 
+def is_multiplayer(details):
+    return details.get('type') == 'game' and any(
+        c.get('id') in (1, 9, 20, 24, 27, 36, 37, 38, 39, 47, 48, 49)
+        for c in details.get('categories', [])
+    )
+
+
 class APIError(Exception):
     def __init__(self, status, message):
         self.status = status
@@ -75,7 +82,7 @@ class Handler(SimpleHTTPRequestHandler):
                 item = json.loads(fetch(f'https://store.steampowered.com/api/appdetails?appids={appid}&cc=de&l=german'))[appid]
                 if not item.get('success'): raise ValueError('Keine Store-Daten verfügbar')
                 d = item['data']; price = d.get('price_overview', {})
-                result = {'name': d['name'], 'coop': any(c['id'] in (9,38,39) for c in d.get('categories', [])), 'categories': [c['description'] for c in d.get('categories', [])], 'price': 0 if d.get('is_free') else (price.get('final', 0)/100 if price.get('currency') == 'EUR' and 'final' in price else None), 'genres': [g['description'] for g in d.get('genres', [])]}
+                result = {'name': d['name'], 'multiplayer': is_multiplayer(d), 'coop': any(c['id'] in (9,38,39) for c in d.get('categories', [])), 'categories': [c['description'] for c in d.get('categories', [])], 'price': 0 if d.get('is_free') else (price.get('final', 0)/100 if price.get('currency') == 'EUR' and 'final' in price else None), 'genres': [g['description'] for g in d.get('genres', [])]}
             else: raise ValueError('Unbekannte Anfrage')
             self.reply(200, result)
         except APIError as e:

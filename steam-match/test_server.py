@@ -7,6 +7,13 @@ import server
 
 SID = '76561198925829155'
 class SteamAPITest(unittest.TestCase):
+    def test_multiplayer_categories(self):
+        self.assertTrue(server.is_multiplayer({'type':'game','categories':[{'id':1}]}))
+        self.assertTrue(server.is_multiplayer({'type':'game','categories':[{'id':9}]}))
+        self.assertFalse(server.is_multiplayer({'type':'game','categories':[{'id':2}]}))
+        self.assertFalse(server.is_multiplayer({'type':'game'}))
+        self.assertFalse(server.is_multiplayer({'type':'dlc','categories':[{'id':1}]}))
+
     def test_missing_key(self):
         with patch.dict(os.environ, {}, clear=True), patch.object(server, 'fetch') as fetch:
             with self.assertRaises(server.APIError) as e: server.library(SID)

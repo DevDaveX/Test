@@ -48,7 +48,7 @@ Store-Daten für die Kaufideen wurden tatsächlich vom deutschen Steam-Store abg
 1. Bibliotheken laden oder separat importieren. Der Datenstatus zeigt, ob alle drei geladen sind. Import ersetzt die Besitzinformationen des ausgewählten Accounts; Wünsche anderer Accounts bleiben erhalten.
 2. Unter „Bearbeiten“ Eignung für euren konkreten Spielmodus bestätigen sowie Stimmung und optional Zeit pro Runde ergänzen. Store-Koop-Tags sind nur Hinweise und keine automatische Zwei-Spieler-Bestätigung. Für Steam-Titel sind die Store-Seiten verlinkt.
 3. Kaufoption wählen: beide besitzen das Spiel, eine fehlende Kopie oder auch zwei neue Kopien. Budget pro Person, standardmäßig 15 €. Ein Spiel für 13,99 € darf bei zwei fehlenden Kopien insgesamt 27,98 € kosten. Unbekannte und veraltete Live-Preise schließen nötige Käufe aus.
-4. Beide wählen „Ist okay“, „Favorit“ oder „Heute nicht“. Ein Veto entfernt das Spiel. Wer nicht aktiv abstimmt, bleibt neutral; es handelt sich um eine gemeinsame lokale Bedienung ohne getrennte Anmeldung.
+4. Pia und David wählen im jeweiligen Profil „Ist okay“, „Lieblingsspiel“ oder „Heute nicht“. Ein Veto entfernt das Spiel. Wer nicht aktiv abstimmt, bleibt neutral; es handelt sich um eine lokale Profilauswahl ohne getrennte Anmeldung.
 5. Optional Horror, Stimmung, Zeitlimit und bereits eingeplante Spiele filtern. Nicht passende Spiele bleiben sichtbar und nennen alle Ausschlussgründe.
 6. Auslosen und das Ergebnis bei Bedarf in die Warteschlange übernehmen. Ohne zulässigen Titel ist die Auslosung deaktiviert.
 
@@ -69,3 +69,15 @@ Für Bibliotheken: `api.steampowered.com`. Für Live-Preise: `store.steampowered
 - Vollständiger Live-Accountvergleich **nicht** verifiziert: gültiger Steam-API-Schlüssel fehlt.
 
 Playwright ist nur für die Entwicklungstests nötig, nicht zum Benutzen. Testdaten stammen aus isolierten Browserkontexten. Bestehendes Repository `/workspace/Test` wurde nicht verändert.
+
+## Pia und David, Favoriten und Mehrspielerfilter
+
+Bei jedem Seitenaufruf erscheint die Auswahl zwischen Pia und David. Pro Profil können Lieblingsspiele, neutrale Wünsche und Vetos gesetzt werden; „Person wechseln“ wechselt die Bearbeitung. Bestehende Wünsche werden übernommen (bisher „Du“ → David, „Sie“ → Pia). Das andere Profil wird dabei nicht überschrieben. „Nur meine Lieblingsspiele anzeigen“ grenzt die sichtbaren Karten ein; die Auslosung verwendet weiterhin beide Wünsche und die festgelegten Regeln. Die Auswahl ist keine Anmeldung: Daten werden weiterhin in diesem Browser gespeichert, nicht zwischen verschiedenen Geräten synchronisiert.
+
+Steam-Spiele werden anhand ihrer Store-Kategorien auf Mehrspieler-/Koop-Unterstützung geprüft. Reine Singleplayer, Software und noch ungeprüfte Titel erscheinen nicht in der Auswahl und können nicht ausgelost werden. Die erste Prüfung bei mehreren hundert Spielen braucht einige Minuten; Fortschritt wird angezeigt und gespeichert. Nach einem Neuladen oder über „Koop-/Mehrspieler prüfen“ werden ungeprüfte Einträge erneut versucht. Store-Fehler lassen Titel ausgeblendet. Zusätzlich bleibt die konkrete Zwei-Personen-Eignung unter „Bearbeiten“ zu bestätigen, da ein Mehrspieler-Tag keine Mindestspielerzahl oder Plattformkompatibilität garantiert.
+
+Minecraft, Roblox, Skribbl.io (Scribble.IO) und Gartic Phone sind feste zusätzliche Einträge. Minecraft-Besitz ist nicht vorgegeben und muss bestätigt werden; Edition und Server müssen zusammenpassen. Kostenlose Browser-/Plattformspiele sind als zugänglich gekennzeichnet und benötigen keine Steam-Lizenz. Roblox erfordert eine passende gemeinsame Experience.
+
+Huntsman ist die ausdrückliche Ausnahme: Pia spielt alleine, David schaut per Livestream zu. Nur Pia setzt dessen Wunsch; nur ihre Lizenz und ihr Veto zählen für diesen Eintrag. Es wird keine ungeprüfte Steam-App-ID für den Titel geraten. Eine Uhrzeitsperre ist nicht gesetzt.
+
+Spielbilder sind absolut auf den begrenzten Kartenkopf zugeschnitten. Sie verdrängen oder überdecken keine Titel, Wünsche oder Schaltflächen. Das wurde mit erfolgreich geladenen Bildern auf Desktop und bei 390 px Breite geprüft.

@@ -1,40 +1,62 @@
+"""UI regression checks; isolated browser state and mocked Steam responses."""
+import threading
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-with sync_playwright() as p:
-    b=p.chromium.launch(headless=True, executable_path='/usr/bin/chromium', args=['--no-sandbox'])
-    page=b.new_page(viewport={'width':1440,'height':1000})
-    errors=[]
-    page.on('pageerror',lambda e:errors.append(str(e)))
-    page.goto('http://127.0.0.1:8080/')
-    page.get_by_role('button',name='Beispiel ansehen').click()
-    assert page.locator('.card').count()==6
-    page.get_by_role('button',name='Gemeinsames Spiel auslosen').click()
-    assert page.locator('#winner strong').inner_text()
-    page.get_by_role('button',name='In die Warteschlange').click()
-    assert page.locator('.queueitem').count()==1
-    page.screenshot(path=str(Path(__file__).parent/'desktop.png'),full_page=True)
-    page.set_viewport_size({'width':390,'height':844})
-    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-    page.screenshot(path=str(Path(__file__).parent/'mobile.png'),full_page=True)
-    # Replace demos with real-format imported libraries; account B + her library is a match.
-    page.get_by_text('Profile & manueller Bibliothek-Import').click()
-    page.locator('#account').select_option('b')
-    page.locator('#importText').fill('413150;Stardew Valley')
-    page.get_by_role('button',name='Importieren',exact=True).click()
-    page.locator('#account').select_option('c')
-    page.locator('#importText').fill('{"response":{"games":[{"appid":413150,"name":"Stardew Valley"}]}}')
-    page.get_by_role('button',name='Importieren',exact=True).click()
-    assert '1 gemeinsame Spiele' in page.locator('#status').inner_text()
-    assert page.locator('.card').count()==1
-    assert page.locator('#draw').is_disabled() # no invented co-op confirmation
-    page.get_by_role('button',name='Bearbeiten',exact=True).click()
-    page.locator('#newCoop').check()
-    page.get_by_role('button',name='Hinzufügen / vorhandene App-ID ergänzen').click()
-    assert not page.locator('#draw').is_disabled()
-    page.locator('.votes select').nth(1).select_option('no')
-    assert page.locator('#draw').is_disabled()
-    page.reload()
-    assert page.locator('.votes select').nth(1).input_value()=='no'
-    assert not errors,errors
-    print('Browser passed: demo, draw, queue, mobile layout, CSV + JSON imports, union of accounts, co-op confirmation, veto and persistence. No page errors.')
-    b.close()
+import server
+
+http = server.ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
+threading.Thread(target=http.serve_forever, daemon=True).start()
+try:
+    with sync_playwright() as p:
+        b = p.chromium.launch(headless=True, executable_path='/usr/bin/chromium', args=['--no-sandbox'])
+        page = b.new_page(viewport={'width': 1440, 'height': 1000})
+        errors = []
+        page.on('pageerror', lambda e: errors.append(str(e)))
+        page.route('**/header.jpg', lambda route: route.fulfill(content_type='image/svg+xml', body='<svg xmlns="http://www.w3.org/2000/svg" width="460" height="215"><rect width="460" height="215" fill="#615181"/><text x="120" y="120" fill="white" font-size="35">Portal 2</text></svg>'))
+        page.goto('http://127.0.0.1:' + str(http.server_port))
+        assert page.locator('#profileDialog').is_visible()
+        page.locator('#chooseDavid').click()
+        assert page.locator('.card').count() == 5
+        assert page.get_by_role('heading', name='Huntsman', exact=True).count() == 1
+        assert page.get_by_label('David · Huntsman', exact=True).count() == 0
+        page.get_by_label('David · Roblox', exact=True).select_option('yes')
+        page.locator('#favoritesOnly').check()
+        assert page.locator('.card').count() == 1
+        page.locator('#switchPerson').click()
+        page.locator('#choosePia').click()
+        assert page.locator('.card').count() == 0 # David's favorite isn't Pia's
+        page.locator('#favoritesOnly').uncheck()
+        page.get_by_label('Pia · Huntsman', exact=True).select_option('yes')
+        page.get_by_label('Pia · Roblox', exact=True).select_option('no')
+        roblox = page.locator('.card').filter(has=page.get_by_role('heading', name='Roblox', exact=True))
+        assert 'Heute nicht gewünscht' in roblox.inner_text()
+        page.evaluate('''() => {const s=JSON.parse(localStorage.getItem('player-two-v1'));s.games.push({id:'620',name:'Portal 2',owners:['a','c'],confirmed:true,multiplayer:true,votes:['yes','yes'],genre:'Kreativ',price:null});s.games.push({id:'999',name:'Hackhub Test Singleplayer',owners:['a','c'],confirmed:true,multiplayer:false,votes:['neutral','neutral'],genre:'Kreativ'});localStorage.setItem('player-two-v1',JSON.stringify(s));}''')
+        page.reload()
+        assert page.locator('#profileDialog').is_visible()
+        page.locator('#choosePia').click()
+        assert page.get_by_label('Pia · Huntsman', exact=True).input_value() == 'yes'
+        assert page.get_by_label('Pia · Roblox', exact=True).input_value() == 'no'
+        assert page.get_by_role('heading', name='Hackhub Test Singleplayer', exact=True).count() == 0
+        image = page.locator('.art img').first
+        image.wait_for()
+        page.wait_for_function('document.querySelector(".art img").complete')
+        for width in (1440, 390):
+            page.set_viewport_size({'width': width, 'height': 1000})
+            for art in page.locator('.art').all():
+                rect = art.bounding_box()
+                content = art.locator('..').locator('.content').bounding_box()
+                assert content['y'] >= rect['y'] + rect['height'] - 1
+                for img in art.locator('img').all():
+                    ir = img.bounding_box()
+                    assert ir['y'] >= rect['y'] and ir['y'] + ir['height'] <= rect['y'] + rect['height'] + 1
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            page.screenshot(path=str(Path(__file__).parent / ('desktop.png' if width == 1440 else 'mobile.png')), full_page=True)
+        page.locator('#draw').click()
+        page.get_by_role('button', name='In die Warteschlange').click()
+        assert page.locator('.queueitem').count() == 1
+        assert not errors, errors
+        print('Browser passed: entry profile picker, separate favorites/veto persistence, five extras, Pia-only Huntsman, singleplayer hidden, loaded image containment, desktop/mobile layout, draw and queue.')
+        b.close()
+finally:
+    http.shutdown()
+    http.server_close()

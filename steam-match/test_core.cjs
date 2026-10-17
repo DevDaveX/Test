@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');
 const {reasons,pick,weight}=require('./core.js');
 const f={buy:'owned',budget:15,genre:'all',duration:999,verified:true,horror:false,queueExclude:true};
-const base={id:'1',owners:['b','c'],confirmed:true,genre:'Horror',minutes:60,price:10,priceSource:'manual',votes:['neutral','neutral']};
+const base={id:'1',multiplayer:true,owners:['b','c'],confirmed:true,genre:'Horror',minutes:60,price:10,priceSource:'manual',votes:['neutral','neutral']};
 assert.deepEqual(reasons(base,f,[]),[]);
 assert(reasons({...base,owners:['a']},f,[]).length);
 assert.deepEqual(reasons({...base,owners:['a']},{...f,buy:'one'},[]),[]);
@@ -22,3 +22,10 @@ assert.equal(pick(pool,true,()=>0).id,'1');
 for(let i=1;i<5;i++)assert.equal(pick(pool,true,()=>i).id,'2');
 assert.equal(pick(pool,false,()=>1).id,'2');
 console.log('19 assertions passed: ownership union, budget, veto, eligibility, time, queue and weighted draw.');
+
+assert(reasons({...base,multiplayer:false},f,[]).includes('Kein bestätigtes Koop-/Mehrspielerspiel'));
+const huntsman={...base,id:'extra-huntsman',mode:'stream',owners:['c'],votes:['no','yes']};
+assert.deepEqual(reasons(huntsman,f,[]),[]);
+assert.equal(weight(huntsman,true),2);
+assert(reasons({...huntsman,votes:['yes','no']},f,[]).includes('Heute nicht gewünscht'));
+console.log('Singleplayer exclusion and Pia-only livestream rules passed.');
