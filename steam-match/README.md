@@ -21,7 +21,25 @@ Dann auf dem eigenen Rechner im Browser `http://127.0.0.1:8080` öffnen. Der Ser
 
 Deine Bibliothek ist die Vereinigung beider Accounts. Die Schnittmenge mit ihrem Account bildet die gemeinsam besessenen Titel. Abgleich über Steam-App-ID, nicht Spielnamen. Es wird angezeigt, welcher deiner Accounts ein Spiel besitzt. Gleichzeitige Verfügbarkeit, Spielmodus, Betriebssystem und eventuelle DLC-Anforderungen müssen zusätzlich passen; Besitz auf einem Account garantiert keine gleichzeitige Lizenznutzung über Familienfreigabe.
 
-**Der tatsächliche Bibliotheksvergleich ist noch offen:** Die Spielelisten aller drei angegebenen Accounts leiteten bei der Prüfung auf die Steam-Anmeldeseite um. Dies beweist weder Privatstatus noch Spielbesitz. Die öffentlichen Spielelisten sind über den anonymen Zugriff hier nicht verfügbar. Die App speichert keine Login-Daten und versucht nicht, Zugriffsbeschränkungen zu umgehen. Alternativ je Account Steam-XML, Steam-API-JSON oder `App-ID;Spielname` importieren. Keine Passwörter oder Tokens eingeben. Ein leerer Import wird abgelehnt, um nicht versehentlich eine Bibliothek zu löschen.
+## Steam Web API einrichten
+
+Der automatische Abruf verwendet die offizielle HTTPS-Schnittstelle `IPlayerService/GetOwnedGames/v0001` mit `include_appinfo=1` und `include_played_free_games=1`. Beide eigenen Bibliotheken werden weiterhin mit ihrem Account verglichen. XML-Scraping wird nicht mehr verwendet.
+
+1. Einen Steam-Web-API-Schlüssel über https://steamcommunity.com/dev/apikey registrieren (Steam-Anmeldung nur auf der offiziellen Steam-Seite).
+2. Auf dem Server die geheime Umgebungsvariable `STEAM_API_KEY` setzen und den Server neu starten. Nicht in Quellcode, HTML, Browser-Speicher oder GitHub eintragen. In Bash kann der Schlüssel ohne Terminalanzeige und ohne Shell-History-Eintrag abgefragt werden:
+
+```bash
+read -rsp 'Steam API key: ' STEAM_API_KEY; echo
+export STEAM_API_KEY
+python3 server.py
+```
+
+   Auf einem Hosting-Dienst dessen Secret-/Umgebungsvariablen-Einstellungen verwenden. In dieser Cloud-Umgebung die gespeicherte Secret-Anforderung in den Umgebungseinstellungen sicher befüllen. Der Schlüssel wird ausschließlich serverseitig an `api.steampowered.com` gesendet.
+3. Auf allen drei Steam-Profilen Profil und Spieldetails öffentlich freigeben, dann „Steam-Bibliotheken via API laden“ klicken. Der API-Schlüssel umgeht keine privaten Bibliotheken.
+
+Fehlender Schlüssel, verweigerter Zugriff, Rate-Limit und Netzwerkfehler werden getrennt behandelt. Fehlgeschlagene oder unvollständige Antworten überschreiben keine vorhandene Bibliothek. Eine von Steam ausdrücklich mit `game_count: 0` zurückgegebene leere Bibliothek ist dagegen ein gültiges Ergebnis.
+
+**Validierungsgrenze:** Die API-Anbindung ist mit simulierten Steam-Antworten getestet. Ein Live-Bibliotheksvergleich benötigt einen gültigen API-Schlüssel, der in dieser Entwicklungsumgebung noch nicht vorliegt. Alternativ je Account Steam-XML, Steam-API-JSON oder `App-ID;Spielname` importieren. Keine Passwörter oder Tokens in den Import eingeben.
 
 Store-Daten für die Kaufideen wurden tatsächlich vom deutschen Steam-Store abgerufen; sie bestätigen keinen Besitz. „Kaufideen bis 15 € laden“ ergänzt Portal 2, Stardew Valley, Lethal Company, Content Warning und Terraria. Preisstand ist pro Karte hinterlegt; nach 24 Stunden werden diese Preise für Käufe bis zur Aktualisierung ausgeschlossen. Manuell eingegebene Preise sind eure eigene Bestätigung und haben keinen automatischen Aktualitätsnachweis. Steam-Preise können sich jederzeit ändern und regional abweichen. Verfügbare Geschenke, DLCs, Sondereditionen oder Friend-Pass-Regeln vor dem Kauf separat prüfen. Es werden keine Käufe ausgeführt.
 
@@ -40,13 +58,14 @@ Beispielmodus ist immer als solcher markiert. Beispielbesitz und Beispielpreise 
 
 ## Netzwerk und Grenzen
 
-Für Bibliotheken: `steamcommunity.com`. Für Live-Preise: `store.steampowered.com`. Optionale Bilder: `shared.fastly.steamstatic.com`. TLS-Prüfung bleibt aktiv. Die beiden Pflichtdomains wurden dem Cloud-Konfigurationsentwurf hinzugefügt; Veröffentlichung ist separat. Der lokale Server benötigt weder API-Key noch Drittbibliotheken. Keine Anmeldung über diesen Server. Private oder loginpflichtige Bibliotheken benötigen den manuellen Import. Für komfortable automatische Bibliotheksabfragen wäre eine separate, sicher konfigurierte offizielle Steam-Web-API-Integration möglich; sie ist hier nicht implementiert.
+Für Bibliotheken: `api.steampowered.com`. Für Live-Preise: `store.steampowered.com`. Optionale Bilder: `shared.fastly.steamstatic.com`. TLS-Prüfung bleibt aktiv. Python benötigt keine Drittbibliotheken. Server nur lokal betreiben; nicht ohne zusätzliche Zugriffskontrolle öffentlich veröffentlichen. Private Bibliotheken benötigen einen manuellen Import.
 
 ## Geprüft
 
 - `node test_core.cjs`: Besitzvereinigung, Kaufmodi, Budgetgrenze, Preisstatus, Vetos, Horror, Zwei-Spieler-Bestätigung, unbekannte Dauer, Warteschlange, Losgewichte und deterministische Auswahlgrenzen.
 - `python browser_check.py`: mit Playwright und lokalem Chromium; Beispielauslosung, Warteschlange, Layout bei 390 px, CSV-/JSON-Import, Account-Vereinigung, Eignungsbestätigung, Veto und Browserpersistenz.
 - HTTP-Auslieferung von HTML und JavaScript, echte Steam-Store-Anfragen.
-- Vollständiger Accountvergleich **nicht** verifiziert: Steam leitet Spielelisten auf Login um.
+- `python -m unittest test_server.py`: API-Anfragen, fehlender Schlüssel, private und leere Bibliotheken, unvollständige Antworten und Fehlermeldungen ohne Schlüsseloffenlegung.
+- Vollständiger Live-Accountvergleich **nicht** verifiziert: gültiger Steam-API-Schlüssel fehlt.
 
 Playwright ist nur für die Entwicklungstests nötig, nicht zum Benutzen. Testdaten stammen aus isolierten Browserkontexten. Bestehendes Repository `/workspace/Test` wurde nicht verändert.
